@@ -3,6 +3,7 @@ import { fastifyCors } from '@fastify/cors'
 import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import { routes } from '../routes'
 
 
 const app = fastify()
@@ -25,6 +26,8 @@ app.register(fastifySwaggerUi, {
     routePrefix: '/docs',       // verificar rota final
 })
  
+app.register(routes)
+
 app.listen({ port: 3333}).then(() => {  //criação do servidor porta 3333
     console.log("HTTP server running!")
 })
