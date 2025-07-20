@@ -98,7 +98,27 @@ export async function routes(app: FastifyTypeInstance) {
         if (dbMedia === undefined){
             return reply.status(404).send()
         } else {
-        //se a media existir adcionar aos favoritos e retornar ok
+            const dbUserIdFavoriteList = userFavoritesList.find((user) =>{
+                return user.userId === userId
+            })
+            if (dbUserIdFavoriteList === undefined) {
+                userFavoritesList.push({
+                    userId: userId,
+                    favorites: [mediaId]
+                })
+                return reply.status(204).send()    
+            } else {
+                const isAlreadyFavorite = dbUserIdFavoriteList.favorites.find((mediaFav) => {
+                    return mediaFav === mediaId
+                })
+                if(isAlreadyFavorite === undefined) {
+                    dbUserIdFavoriteList.favorites.push(mediaId)
+                }
+                return reply.status(204).send()
+            }
+           
+        //se a media existir adicionar aos favoritos e retornar ok
+        
         //buscar preferencias do usuario na lista de usuarios
         //se encontrou usuario na lista 
             //verificar se o favorito ja está na lista do usuario
@@ -106,43 +126,41 @@ export async function routes(app: FastifyTypeInstance) {
             //se estiver retornar ok
         //se não encontrou usuario na lista criar um novo usuario e add favorito na lista de usuarios
         //
-
-
-            return reply.status(204).send()
         }
         
 
-
     })
 
-    app.get('/users/:userId/favorites)', {
+    app.get('/users/:userId/favorites', {
         schema: {
             tags: ['Users'],
             description: 'List user favorite items',
             params: z.object({
-                //zzzzzzzzzz
+                userdId: z.string(),
             }),
-            response:{
-                200: 'zzz'
-            }
-        }
-    })
-
-    app.delete('/users/:userId/favorites/:mediaId)',{
-        schema: {
-
-        }
-    })
-
-}
-
-    app.get('/media/:id', {
-        schema: {
-            tags: ['Media'],
-            description: 'Get media by Id',
-            params: z.object({
-                id: z.string().uuid(),
-            }),               
             response: {
-                200: GetMediaByIdResponseSchema
+                200: z.string()
             },
+        }
+    }, async (request, reply) =>{
+        return reply.status(200).send()
+    })
+
+   app.delete('/users/:userId/favorites/:mediaId', {
+        schema: {
+            tags: ['Users'],
+            description: 'Remove a media from user favorite list',
+            params: z.object({
+                userId: z.string(),
+                mediaId: z.string(),
+            }),
+            response: {
+                204: z.string(),
+            },
+        }
+    }, async (request, reply) =>{
+        return reply.status(200).send()
+    })
+
+    
+}
