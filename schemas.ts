@@ -12,7 +12,7 @@ export const PostMediaResponseSchema = PostMediaRequestSchema.extend({
     id: z.string()
 });
 
-export const GetMediaByIdResponseSchema = PostMediaResponseSchema
+export const mediaIdResponseSchema = PostMediaResponseSchema
 
 export const PostUserFavoriteRequestSchema = z.object({
     mediaId: z.string().uuid(),

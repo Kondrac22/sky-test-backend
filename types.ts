@@ -18,7 +18,27 @@ export interface CatalogItem {
     genre: string
 }
 
+export interface FavoriteItem {
+  title: string;
+  description: string;
+  type: "Movie" | "Serie";
+  releaseYear: number;
+  genre: string;
+  id: string;
+}
+
 export interface UserFavorites{
     userId: string
-    favorites: string[]
+    favorites: FavoriteItem[];
+}
+
+export function CreateFavUserList(media: CatalogItem): FavoriteItem {
+    return { 
+        id: media.id,
+        title: media.title,
+        description: media.description,
+        type: media.type,
+        releaseYear: media.releaseYear,
+        genre: media.genre
+    }
 }

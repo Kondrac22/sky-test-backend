@@ -1,8 +1,7 @@
 import z, { ZodLazy } from "zod";
 import { randomUUID } from "node:crypto";
-import { CatalogItem, FastifyTypeInstance, UserFavorites } from "./types";
-import { GetMediaByIdResponseSchema, PostMediaRequestSchema, PostMediaResponseSchema, PostUserFavoriteRequestSchema } from "./schemas";
-import { request } from "node:http";
+import { CatalogItem, FastifyTypeInstance, FavoriteItem, UserFavorites } from "./types";
+import { mediaIdResponseSchema, PostMediaRequestSchema, PostMediaResponseSchema, PostUserFavoriteRequestSchema } from "./schemas";
 
 const userFavoritesList : UserFavorites[]= []
 const catalogList : CatalogItem[] = []
@@ -28,7 +27,7 @@ export async function routes(app: FastifyTypeInstance) {
                 id: z.string().uuid(),
             }),               
             response: {
-                200: GetMediaByIdResponseSchema
+                200: mediaIdResponseSchema
             },
         }
     }, async (request, reply) =>{
@@ -46,9 +45,7 @@ export async function routes(app: FastifyTypeInstance) {
         } else {            
             return reply.status(404).send()
         }
-
     })
-
     app.post('/media',{
         schema: {
             tags: ['Media'],
@@ -73,9 +70,7 @@ export async function routes(app: FastifyTypeInstance) {
         catalogList.push(media)
 
         return reply.status(201).send(media)
-
     })
-
     app.post('/users/:userId/favorites', {
         schema: {
             tags: ['Users'],
@@ -98,54 +93,47 @@ export async function routes(app: FastifyTypeInstance) {
         if (dbMedia === undefined){
             return reply.status(404).send()
         } else {
+            // verificar se o id está na lista
             const dbUserIdFavoriteList = userFavoritesList.find((user) =>{
                 return user.userId === userId
-            })
+            }) // se não estiver na lista, incluir userId e media nos favoritos
             if (dbUserIdFavoriteList === undefined) {
                 userFavoritesList.push({
                     userId: userId,
-                    favorites: [mediaId]
+                    favorites: [CreateFavUserList(dbMedia)]
                 })
                 return reply.status(204).send()    
-            } else {
-                const isAlreadyFavorite = dbUserIdFavoriteList.favorites.find((mediaFav) => {
-                    return mediaFav === mediaId
-                })
+            } else { //verificar se a media está na lista 
+                const isAlreadyFavorite = dbUserIdFavoriteList.favorites.find((fav) => {
+                    return fav.id === mediaId;
+                }) //se não entao adicionar
                 if(isAlreadyFavorite === undefined) {
-                    dbUserIdFavoriteList.favorites.push(mediaId)
+                    dbUserIdFavoriteList.favorites.push(CreateFavUserList(dbMedia))
                 }
                 return reply.status(204).send()
             }
-           
-        //se a media existir adicionar aos favoritos e retornar ok
-        
-        //buscar preferencias do usuario na lista de usuarios
-        //se encontrou usuario na lista 
-            //verificar se o favorito ja está na lista do usuario
-            //se não estiver add
-            //se estiver retornar ok
-        //se não encontrou usuario na lista criar um novo usuario e add favorito na lista de usuarios
-        //
         }
-        
-
     })
-
     app.get('/users/:userId/favorites', {
         schema: {
             tags: ['Users'],
             description: 'List user favorite items',
             params: z.object({
-                userdId: z.string(),
+                userId: z.string(),
             }),
             response: {
-                200: z.string()
+                200: z.array(mediaIdResponseSchema)
             },
         }
     }, async (request, reply) =>{
-        return reply.status(200).send()
+        //receber o userId
+        const userId = request.params.userId
+        const dbUserIdFavoriteList = userFavoritesList.find((userFavList) => {
+            return userFavList.userId === userId        
+        });
+        return reply.status(200).send(dbUserIdFavoriteList?.favorites || [] );
     })
-
+    
    app.delete('/users/:userId/favorites/:mediaId', {
         schema: {
             tags: ['Users'],
@@ -161,6 +149,9 @@ export async function routes(app: FastifyTypeInstance) {
     }, async (request, reply) =>{
         return reply.status(200).send()
     })
-
-    
+   
 }
+function CreateFavUserList(dbMedia: CatalogItem): FavoriteItem {
+    throw new Error("Function not implemented.");
+}
+
