@@ -5,26 +5,26 @@ import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import { routes } from '../routes'
 
-
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setValidatorCompiler(validatorCompiler) //seta o zod para validar os dados de entrada
+
 app.setSerializerCompiler(serializerCompiler) //seta o zod para serialização dos dados de saida
 
 app.register(fastifyCors, { origin: '*'}) // permite que qualquer domínio acesse a API
 
-app.register(fastifySwagger, {    // registra o swagger que cria uma pagina e usa a versao mais atual openapi
+app.register(fastifySwagger, {    // cria um registro swagger para documentar a API
     openapi: {
         info: {
             title: 'type API',
             version: '1.0.0',
         }
     },
-    transform: jsonSchemaTransform,
+    transform: jsonSchemaTransform,  //pre visualização do schema
 })
 
 app.register(fastifySwaggerUi, {
-    routePrefix: '/docs',       // verificar rota final
+    routePrefix: '/docs',       // padrão de rota 
 })
  
 app.register(routes)

@@ -32,7 +32,7 @@ export interface UserFavorites{
     favorites: FavoriteItem[];
 }
 
-export function CreateFavUserList(media: CatalogItem): FavoriteItem {
+export function createFavUserList(media: CatalogItem): FavoriteItem {
     return { 
         id: media.id,
         title: media.title,
