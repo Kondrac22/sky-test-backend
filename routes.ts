@@ -1,6 +1,6 @@
 import z, { ZodLazy } from "zod";
 import { randomUUID } from "node:crypto";
-import { CatalogItem, FastifyTypeInstance, FavoriteItem, UserFavorites } from "./types";
+import { CatalogItem, CreateFavUserList, FastifyTypeInstance, FavoriteItem, UserFavorites } from "./types";
 import { mediaIdResponseSchema, PostMediaRequestSchema, PostMediaResponseSchema, PostUserFavoriteRequestSchema } from "./schemas";
 
 const userFavoritesList : UserFavorites[]= []
@@ -144,14 +144,28 @@ export async function routes(app: FastifyTypeInstance) {
             }),
             response: {
                 204: z.string(),
+                404: z.string(),
             },
         }
     }, async (request, reply) =>{
-        return reply.status(200).send()
+        const userId = request.params.userId
+        const mediaId = request.params.mediaId
+        const dbUserIdFavoritesList = userFavoritesList.find((userFavList) =>{
+            return userFavList.userId === userId
+        })
+        if (!dbUserIdFavoritesList){
+            return reply.status(404).send('User not found')
+        }
+        const mediaIndex = dbUserIdFavoritesList.favorites.findIndex((media) => {
+            return media.id === mediaId
+        })
+        if (mediaIndex === -1) {
+            return reply.status(400).send('Media not found')
+        }
+        dbUserIdFavoritesList.favorites.splice(mediaIndex, 1)
+            return reply.status(200).send()
     })
    
 }
-function CreateFavUserList(dbMedia: CatalogItem): FavoriteItem {
-    throw new Error("Function not implemented.");
-}
+
 
