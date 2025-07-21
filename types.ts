@@ -12,7 +12,7 @@ export type FastifyTypeInstance = FastifyInstance<
 export interface CatalogItemRequest {
     title: string
     description: string
-    type: "Movie" | "Serie"
+    type: 'Movie' | 'Serie'
     releaseYear: number
     genre: string
 }
@@ -24,7 +24,7 @@ export interface CatalogItem extends CatalogItemRequest {
 export interface FavoriteItem {
   title: string;
   description: string;
-  type: "Movie" | "Serie";
+  type: 'Movie' | 'Serie';
   releaseYear: number;
   genre: string;
   id: string;

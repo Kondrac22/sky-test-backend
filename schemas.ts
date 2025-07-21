@@ -3,7 +3,7 @@ import z from "zod";
 export const PostMediaRequestSchema = z.object({
     title: z.string(),
     description: z.string(),
-    type: z.enum(["Movie", "Serie"]),
+    type: z.enum(['Movie', 'Serie']),
     releaseYear: z.number(),
     genre: z.string()
 })
