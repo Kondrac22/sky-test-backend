@@ -9,13 +9,16 @@ export type FastifyTypeInstance = FastifyInstance<
     ZodTypeProvider
 >
 
-export interface CatalogItem {
-    id: string
+export interface CatalogItemRequest {
     title: string
     description: string
     type: "Movie" | "Serie"
     releaseYear: number
     genre: string
+}
+
+export interface CatalogItem extends CatalogItemRequest {
+    id: string
 }
 
 export interface FavoriteItem {
@@ -32,13 +35,3 @@ export interface UserFavorites{
     favorites: FavoriteItem[];
 }
 
-export function createFavUserList(media: CatalogItem): FavoriteItem {
-    return { 
-        id: media.id,
-        title: media.title,
-        description: media.description,
-        type: media.type,
-        releaseYear: media.releaseYear,
-        genre: media.genre
-    }
-}
