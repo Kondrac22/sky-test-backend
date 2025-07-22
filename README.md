@@ -1,6 +1,8 @@
-# 📼 Media Manager API
+# 📼 Media Manager API (SKY Test BackEnd )
 
 API REST construída com **Node.js**, utilizando o framework **Fastify** e o validador de schemas **Zod**, para gerenciar um catálogo de mídias e listas de favoritos de usuários.
+
+O Fastify foi escolhido como framework por se destacar, segundo minhas pesquisas, como uma opção mais leve e performática em comparação a outras alternativas, como o NestJS. Como ainda não tive experiências práticas com nenhum dos dois, optei pelo Fastify justamente por esses diferenciais, priorizando leveza e simplicidade na implementação.
 
 ---
 
@@ -9,6 +11,9 @@ API REST construída com **Node.js**, utilizando o framework **Fastify** e o val
 - Node.js
 - Fastify
 - Zod
+- Jest
+- ESlint
+- Prettier
 
 ---
 
@@ -17,8 +22,8 @@ API REST construída com **Node.js**, utilizando o framework **Fastify** e o val
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/media-manager-api.git
-cd media-manager-api
+git clone https://github.com/Kondrac22/sky-test-backend.git
+cd sky-test-backend
 ```
 
 2. Instale as dependências:
@@ -31,6 +36,14 @@ npm install
 
 ```bash
 npm run dev
+```
+
+## 🧪 Testes
+
+1. Rodar os testes:
+
+```bash
+npm run test
 ```
 
 ---
@@ -157,25 +170,6 @@ A validação de dados é feita com **Zod**, garantindo que os campos obrigatór
 
 ---
 
-## 🗂 Estrutura de Pastas (sugestão)
-
-```
-src/
-├── routes/
-│   ├── media.js
-│   └── users.js
-├── schemas/
-│   ├── mediaSchema.js
-│   └── favoriteSchema.js
-├── controllers/
-│   ├── mediaController.js
-│   └── userController.js
-├── db.js
-└── index.js
-```
-
----
-
 ## 📝 Licença
 
 Este projeto está sob a licença MIT.
@@ -186,6 +180,4 @@ Este projeto está sob a licença MIT.
 
 - Integração com banco de dados real (ex: PostgreSQL, MongoDB)
 - Autenticação de usuários
-- Upload de imagens para mídias
 - Paginação e filtros na listagem de mídias
-````
